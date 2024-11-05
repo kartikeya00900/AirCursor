@@ -1,0 +1,122 @@
+<!-- home.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual Mouse Control</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: #e0e0e0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        h1 {
+            color: #bb86fc;
+        }
+        button {
+            background-color: #1f1f1f;
+            color: #e0e0e0;
+            border: 2px solid #bb86fc;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-size: 16px;
+            margin: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+        button:hover {
+            background-color: #bb86fc;
+            border-color: #3700b3;
+            color: #121212;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            background-color: #2a2a2a;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+        }
+        .spinner {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #bb86fc;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            display: none; /* Hidden by default */
+            margin: 10px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <h1>Virtual Mouse Control</h1>
+    <div class="status">
+        <p id="statusText">Status: <span id="status">Stopped</span></p>
+    </div>
+    <form action="/run" method="post" id="startForm">
+        <button type="submit" id="startButton">Start Virtual Mouse</button>
+        <div class="spinner" id="startSpinner"></div>
+    </form>
+    <form action="/stop" method="post" id="stopForm">
+        <button type="submit" id="stopButton">Stop Virtual Mouse</button>
+        <div class="spinner" id="stopSpinner"></div>
+    </form>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    <script>
+        const startForm = document.getElementById('startForm');
+        const stopForm = document.getElementById('stopForm');
+        const startButton = document.getElementById('startButton');
+        const stopButton = document.getElementById('stopButton');
+        const startSpinner = document.getElementById('startSpinner');
+        const stopSpinner = document.getElementById('stopSpinner');
+        const statusText = document.getElementById('statusText');
+        const statusSpan = document.getElementById('status');
+
+        startForm.addEventListener('submit', function() {
+            startButton.disabled = true;
+            startSpinner.style.display = 'block';
+            statusSpan.textContent = 'Starting...';
+        });
+
+        stopForm.addEventListener('submit', function() {
+            stopButton.disabled = true;
+            stopSpinner.style.display = 'block';
+            statusSpan.textContent = 'Stopping...';
+        });
+
+        // Use a timeout to simulate the delay for demonstration purposes
+        function simulateLoading() {
+            setTimeout(() => {
+                startButton.disabled = false;
+                stopButton.disabled = false;
+                startSpinner.style.display = 'none';
+                stopSpinner.style.display = 'none';
+                statusSpan.textContent = startButton.disabled ? 'Running' : 'Stopped';
+            }, 2000); // Adjust this timeout as necessary for real cases
+        }
+
+        // Call this function to simulate loading when starting or stopping
+        startForm.addEventListener('submit', simulateLoading);
+        stopForm.addEventListener('submit', simulateLoading);
+    </script>
+</body>
+</html>
